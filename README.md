@@ -1,6 +1,6 @@
 # yolov3-pytorch
 ## 一、预测部分
-主题网络darknet53介绍
+主干特征提取网络darknet53介绍
 ![darknet53](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/darknet53.jpg)
 
 **残差网络Residual**->Deep-Learning/Resnet50；h(x)=F(x)（残差部分，包含卷积）+x(直接映射)
