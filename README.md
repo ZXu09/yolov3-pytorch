@@ -2,6 +2,8 @@
 ## 一、预测部分
 主题网络darknet53介绍
 ![darknet53](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/darknet53.jpg)
+
+**残差网络Residual**->Deep-Learning/Resnet50；h(x)=F(x)（残差部分，包含卷积）+x(直接映射)
 1. Darknet53具有一个重要特点是使用了**残差网络Residual**，Darknet53中的残差卷积就是首先进行一次卷积核大小为3X3、步长为2的卷积，
 该卷积会压缩输入进来的特征层的宽和高，此时我们可以获得一个特征层，我们将该特征层命名为layer。之后我们再对该特征层进行一次1X1的卷积和一次3X3的卷积，
 并把这个结果加上layer，此时我们便构成了残差结构。
