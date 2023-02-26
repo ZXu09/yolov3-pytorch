@@ -1,6 +1,7 @@
 # yolov3-pytorch
 ## 一、预测部分
 主干特征提取网络darknet53介绍
+输入416×416×3->进行采样，宽高不断压缩，通道数不断扩张
 ![darknet53](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/darknet53.jpg)
 
 **残差网络Residual**->Deep-Learning/Resnet50；h(x)=F(x)（残差部分，包含卷积）+x(直接映射)
