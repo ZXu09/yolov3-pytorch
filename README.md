@@ -59,7 +59,7 @@ class DarkNet(nn.Module):
         super(DarkNet, self).__init__()
         self.inplanes = 32
         # 416,416,3 -> 416,416,32
-        self.conv1  = nn.Conv2d(3, self.inplanes, kernel_size=3, stride=1, padding=1, bias=False)
+        self.conv1  = nn.Conv2d(3, self.inplanes, kernel_size=3, stride=1, padding=1, bias=False)# nn.Conv2d()类作为二维卷积的实现
         self.bn1    = nn.BatchNorm2d(self.inplanes)
         self.relu1  = nn.LeakyReLU(0.1)
 
