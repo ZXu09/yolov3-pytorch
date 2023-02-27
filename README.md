@@ -33,7 +33,7 @@ class BasicBlock(nn.Module):
     def __init__(self, inplanes, planes):
         super(BasicBlock, self).__init__()
         self.conv1  = nn.Conv2d(inplanes, planes[0], kernel_size=1, stride=1, padding=0, bias=False)
-        self.bn1    = nn.BatchNorm2d(planes[0])
+        self.bn1    = nn.BatchNorm2d(planes[0])# BN的目的是使一批(Batch)feature map满足均值为0，方差为1的分布（均值归一化）
         self.relu1  = nn.LeakyReLU(0.1)
         
         self.conv2  = nn.Conv2d(planes[0], planes[1], kernel_size=3, stride=1, padding=1, bias=False)
