@@ -338,19 +338,22 @@ class DecodeBox():
             #   batch_size, 255, 26, 26
             #   batch_size, 255, 52, 52
             #-----------------------------------------------#
-            batch_size      = input.size(0)
+            batch_size      = input.size(0)# 一共多少图片
             input_height    = input.size(2)
             input_width     = input.size(3)
 
             #-----------------------------------------------#
             #   输入为416x416时
             #   stride_h = stride_w = 32、16、8
+            #   假设为input_height = input_width = 13时，一个特征点对应416/13=32个像素点
             #-----------------------------------------------#
             stride_h = self.input_shape[0] / input_height
             stride_w = self.input_shape[1] / input_width
             #-------------------------------------------------#
-            #   此时获得的scaled_anchors大小是相对于特征层的
+            #   此时获得的scaled_anchors(先验框)大小是相对于特征层的
+            #   计算出先验框在特征层上对应的宽高
             #-------------------------------------------------#
+            # 除上32对应13×13的特征层的大小（对于每一个anchors）
             scaled_anchors = [(anchor_width / stride_w, anchor_height / stride_h) for anchor_width, anchor_height in self.anchors[self.anchors_mask[i]]]
 
             #-----------------------------------------------#
@@ -359,6 +362,10 @@ class DecodeBox():
             #   batch_size, 3, 26, 26, 85
             #   batch_size, 3, 52, 52, 85
             #-----------------------------------------------#
+            # batch_size,3*(5+num_classes),13,13->batch_size,3,13,13,(5+num_classes)
+            # view变换维度，把原先tensor中的数据按行优先的顺序排成一个一维数据，然后按照输入参数要求，组合成其他维度的tensor。
+            # permute将tensor中任意维度利用索引调换。torch.Size([2, 2, 3])，b=a.permute(2,0,1)，torch.Size([2, 3, 2])
+            # 仅理解contiguous()函数，可以理解为一次深拷贝
             prediction = input.view(batch_size, len(self.anchors_mask[i]),
                                     self.bbox_attrs, input_height, input_width).permute(0, 1, 3, 4, 2).contiguous()
 
