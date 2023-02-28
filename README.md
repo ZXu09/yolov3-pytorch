@@ -185,12 +185,12 @@ def conv2d(filter_in, filter_out, kernel_size):
 #------------------------------------------------------------------------#
 def make_last_layers(filters_list, in_filters, out_filter):
     m = nn.Sequential(
-        conv2d(in_filters, filters_list[0], 1),
-        conv2d(filters_list[0], filters_list[1], 3),
+        conv2d(in_filters, filters_list[0], 1),# 1×1的卷积调整通道数
+        conv2d(filters_list[0], filters_list[1], 3),# 3×3的卷积进行特征提取
         conv2d(filters_list[1], filters_list[0], 1),
         conv2d(filters_list[0], filters_list[1], 3),
         conv2d(filters_list[1], filters_list[0], 1),
-        conv2d(filters_list[0], filters_list[1], 3),
+        conv2d(filters_list[0], filters_list[1], 3),# 后面这两层实现分类预测和回归预测
         nn.Conv2d(filters_list[1], out_filter, kernel_size=1, stride=1, padding=0, bias=True)
     )
     return m
@@ -217,19 +217,25 @@ class YoloBody(nn.Module):
         #   final_out_filter0 = final_out_filter1 = final_out_filter2 = 75
         #------------------------------------------------------------------------#
         # 3 * (4 + 1 + 20)
+        # (13,13,512)，输出的out_filter对应75，out_filters[-1]表示最后一层的输入，中间的层之间的变换为[512,1024]
+        # out_filters[-1]->512->1024...->1024->75
         self.last_layer0            = make_last_layers([512, 1024], out_filters[-1], len(anchors_mask[0]) * (num_classes + 5))
 
-        self.last_layer1_conv       = conv2d(512, 256, 1)
-        self.last_layer1_upsample   = nn.Upsample(scale_factor=2, mode='nearest')
+        # 卷积 + 上采样
+        self.last_layer1_conv       = conv2d(512, 256, 1) # 1×1的卷积实现通道减半， in_channels, out_channels, kernel_size:
+        self.last_layer1_upsample   = nn.Upsample(scale_factor=2, mode='nearest')# 上采样，放大倍数为2
+        # (26,26,256)，高、宽26
         self.last_layer1            = make_last_layers([256, 512], out_filters[-2] + 256, len(anchors_mask[1]) * (num_classes + 5))
-
+        
+        # 卷积 + 上采样
         self.last_layer2_conv       = conv2d(256, 128, 1)
         self.last_layer2_upsample   = nn.Upsample(scale_factor=2, mode='nearest')
+         # (52,52,128)，高、宽26
         self.last_layer2            = make_last_layers([128, 256], out_filters[-3] + 128, len(anchors_mask[2]) * (num_classes + 5))
 
     def forward(self, x):
         #---------------------------------------------------#   
-        #   获得三个有效特征层，他们的shape分别是：
+        #   获得三个有效特征层x2,x1,x0，他们的shape分别是：
         #   52,52,256；26,26,512；13,13,1024
         #---------------------------------------------------#
         x2, x1, x0 = self.backbone(x)
