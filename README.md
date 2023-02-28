@@ -30,20 +30,27 @@ import torch.nn as nn
 #   最后接上一个残差边
 #---------------------------------------------------------------------#
 class BasicBlock(nn.Module):
-    def __init__(self, inplanes, planes):
+    # 类中的函数称为方法，类定义了__init__()方法，类的实例化操作会自动调用__init__方法。
+    def __init__(self, inplanes, planes):# 初始化实例后的对象，self代表的是类的实例（对象）
+        # 一般神经网络的类都继承自 torch.nn.Module
+        # init() 和 forward() 是自定义类的两个主要函数，在自定义类的 init() 中需要添加一句 super(Net, self).init()，其中 Net 是自定义的类名，用于继承父类的初始化函数。
+        # 注意在 init() 中只是对神经网络的模块进行了声明，真正的搭建是在 forward() 中实现。自定义类的成员都通过 self 指针来访问，所以参数列表中都包含了 self
         super(BasicBlock, self).__init__()
+        # 1×1卷积下降通道数
         self.conv1  = nn.Conv2d(inplanes, planes[0], kernel_size=1, stride=1, padding=0, bias=False)
         self.bn1    = nn.BatchNorm2d(planes[0])# BN的目的是使一批(Batch)feature map满足均值为0，方差为1的分布（均值归一化）
         self.relu1  = nn.LeakyReLU(0.1)
         
+        #3×3卷积扩张通道数
         self.conv2  = nn.Conv2d(planes[0], planes[1], kernel_size=3, stride=1, padding=1, bias=False)
         self.bn2    = nn.BatchNorm2d(planes[1])
         self.relu2  = nn.LeakyReLU(0.1)
-
+        
+        #这样可以减少参数，参数量计算：channel_in * kernel_size × kernel_size *channel_out
     def forward(self, x):
-        residual = x
+        residual = x# 残差边（直接映射）
 
-        out = self.conv1(x)
+        out = self.conv1(x)# 主干边（残差块）
         out = self.bn1(out)
         out = self.relu1(out)
 
@@ -65,7 +72,7 @@ class DarkNet(nn.Module):
         # torch.nn.LeakyReLU(negative_slope=0.01, inplace=False)
         # negative_slope：控制负斜率的角度，默认等于0.01
         # inplace-选择是否进行覆盖运算
-        # 1.能解决深度神经网络（层数非常多）的"梯度消失"问题（同时有线性），浅层神经网络（三五层那种）才用sigmoid 作为激活函数。
+        # 1.能解决深度神经网络（层数非常多）的"梯度消失"问题（线性的不值域饱和，非线性的复杂映射，在小于0的时候梯度为0，大于0的时候梯度恒为1），浅层神经网络（三五层那种）才用sigmoid 作为激活函数。
         # 2.它能加快收敛速度。
         self.relu1  = nn.LeakyReLU(0.1)
 
