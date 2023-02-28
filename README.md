@@ -102,7 +102,7 @@ class DarkNet(nn.Module):
     #   在每一个layer里面，首先利用一个步长为2的3x3卷积进行下采样
     #   然后进行残差结构的堆叠
     #---------------------------------------------------------------------#
-    def _make_layer(self, planes, blocks):
+    def _make_layer(self, planes, blocks):# blocks表示循环次数
         layers = []
         # 下采样，步长为2，卷积核大小为3
         layers.append(("ds_conv", nn.Conv2d(self.inplanes, planes[1], kernel_size=3, stride=2, padding=1, bias=False)))
@@ -114,7 +114,7 @@ class DarkNet(nn.Module):
             layers.append(("residual_{}".format(i), BasicBlock(self.inplanes, planes)))
         return nn.Sequential(OrderedDict(layers))
 
-    def forward(self, x):
+    def forward(self, x):# 前向传播
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
@@ -216,6 +216,7 @@ class YoloBody(nn.Module):
         #   计算yolo_head的输出通道数，对于voc数据集而言
         #   final_out_filter0 = final_out_filter1 = final_out_filter2 = 75
         #------------------------------------------------------------------------#
+        # 3 * (4 + 1 + 20)
         self.last_layer0            = make_last_layers([512, 1024], out_filters[-1], len(anchors_mask[0]) * (num_classes + 5))
 
         self.last_layer1_conv       = conv2d(512, 256, 1)
