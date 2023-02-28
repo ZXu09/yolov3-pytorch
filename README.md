@@ -372,6 +372,7 @@ class DecodeBox():
             #-----------------------------------------------#
             #   先验框的中心位置的调整参数
             #-----------------------------------------------#
+            # 在0-1之间，故先验框只能在右下角的框内进行调整，让物体由左上角的网格点预测
             x = torch.sigmoid(prediction[..., 0])  
             y = torch.sigmoid(prediction[..., 1])
             #-----------------------------------------------#
@@ -392,8 +393,8 @@ class DecodeBox():
             LongTensor  = torch.cuda.LongTensor if x.is_cuda else torch.LongTensor
 
             #----------------------------------------------------------#
-            #   生成网格，先验框中心，网格左上角 
-            #   batch_size,3,13,13
+            #   生成网格，先验框中心，网格左上角（点上） 
+            #   batch_size,3,13,13 13×13的网格点上，每个网格点上有3个先验框
             #----------------------------------------------------------#
             grid_x = torch.linspace(0, input_width - 1, input_width).repeat(input_height, 1).repeat(
                 batch_size * len(self.anchors_mask[i]), 1, 1).view(x.shape).type(FloatTensor)
