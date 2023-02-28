@@ -13,7 +13,7 @@
 **残差网络**的特点是容易优化，并且能够通过增加相当的深度来提高准确率。其内部的残差块使用了**跳跃连接**，缓解了在深度神经网络中增加深度带来的**梯度消失**问题。
 
 2. Darknet53的每一个卷积部分使用了特有的DarknetConv2D结构，每一次卷积的时候进行l2正则化，完成卷积后进行**BatchNormalization标准化与LeakyReLU**。
-普通的ReLU是将所有的负值都设为零，**Leaky ReLU**则是给所有负值赋予一个非零斜率。以数学的方式我们可以表示为：
+普通的ReLU是将所有的负值都设为零，**Leaky ReLU**则是给所有**负值赋予一个非零斜率**。以数学的方式我们可以表示为：
 ![LeakyReLU](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/LeakyReLU.png)
 
 代码如下：
@@ -61,7 +61,12 @@ class DarkNet(nn.Module):
         # 416,416,3 -> 416,416,32
         # nn.Conv2d是二维卷积方法，输入通道数3，输出通道数32，卷积核大小3×3，步长为1，图像四周填充0
         self.conv1  = nn.Conv2d(3, self.inplanes, kernel_size=3, stride=1, padding=1, bias=False)
-        self.bn1    = nn.BatchNorm2d(self.inplanes)
+        self.bn1    = nn.BatchNorm2d(self.inplanes)# 标准化
+        # torch.nn.LeakyReLU(negative_slope=0.01, inplace=False)
+        # negative_slope：控制负斜率的角度，默认等于0.01
+        # inplace-选择是否进行覆盖运算
+        # 1.能解决深度神经网络（层数非常多）的"梯度消失"问题（同时有线性），浅层神经网络（三五层那种）才用sigmoid 作为激活函数。
+        # 2.它能加快收敛速度。
         self.relu1  = nn.LeakyReLU(0.1)
 
         # 416,416,32 -> 208,208,64
