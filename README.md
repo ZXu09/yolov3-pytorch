@@ -373,7 +373,7 @@ class DecodeBox():
             #   先验框的中心位置的调整参数
             #-----------------------------------------------#
             # 在0-1之间，故先验框只能在右下角的框内进行调整，让物体由左上角的网格点预测
-            x = torch.sigmoid(prediction[..., 0])  
+            x = torch.sigmoid(prediction[..., 0]) #  python切片操作中，...用于代替多个维度，等价于[:, :, 0]，表示最后一个维度的第0列
             y = torch.sigmoid(prediction[..., 1])
             #-----------------------------------------------#
             #   先验框的宽高调整参数
@@ -396,6 +396,12 @@ class DecodeBox():
             #   生成网格，先验框中心，网格左上角（点上） 
             #   batch_size,3,13,13 13×13的网格点上，每个网格点上有3个先验框
             #----------------------------------------------------------#
+            # torch.linspace(start,end,steps)返回一个一维的tensor（张量），这个张量包含了从start到end（包括端点）的等距的steps个数据点。
+            # input_height、input_width 13×13
+            # x.repeat(a,b) :将张量x在列的方向上重复b次，在行的方向上重复a次。->列方向重复input_height 13次->(13×13)
+            # x.repeat(a,b,c) :将张量x在列的方向上重复c次，在行的方向上重复b次，在深度的方向上重复a次。->深度方向重复3(每个网格点对应3个先验框)*样本数量->(batch_size*3,13,13)
+            # 对已知的进行reshape，并改变数据类型
+            # x.shape->(batch_size,3,13,13)
             grid_x = torch.linspace(0, input_width - 1, input_width).repeat(input_height, 1).repeat(
                 batch_size * len(self.anchors_mask[i]), 1, 1).view(x.shape).type(FloatTensor)
             grid_y = torch.linspace(0, input_height - 1, input_height).repeat(input_width, 1).t().repeat(
@@ -405,6 +411,7 @@ class DecodeBox():
             #   按照网格格式生成先验框的宽高
             #   batch_size,3,13,13
             #----------------------------------------------------------#
+            # w.shape (batch_size*3,13,13)
             anchor_w = FloatTensor(scaled_anchors).index_select(1, LongTensor([0]))
             anchor_h = FloatTensor(scaled_anchors).index_select(1, LongTensor([1]))
             anchor_w = anchor_w.repeat(batch_size, 1).repeat(1, 1, input_height * input_width).view(w.shape)
@@ -423,6 +430,7 @@ class DecodeBox():
 
             #----------------------------------------------------------#
             #   将输出结果归一化成小数的形式
+            #   将输出调整为416*416的形式
             #----------------------------------------------------------#
             _scale = torch.Tensor([input_width, input_height, input_width, input_height]).type(FloatTensor)
             output = torch.cat((pred_boxes.view(batch_size, -1, 4) / _scale,
@@ -547,3 +555,5 @@ class DecodeBox():
         return output
 
 ```
+## 四、在原图上进行绘制
+通过第三步，我们可以获得预测框在原图上的位置，而且这些预测框都是经过筛选的。这些筛选后的框可以直接绘制在图片上，就可以获得结果了。
