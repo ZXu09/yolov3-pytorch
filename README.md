@@ -568,6 +568,32 @@ class DecodeBox():
 ```
 ## 4.在原图上进行绘制
 通过第三步，我们可以获得预测框在原图上的位置，而且这些预测框都是经过筛选的。这些筛选后的框可以直接绘制在图片上，就可以获得结果了。
+
+处理长宽不同的图片
+
+对于很多分类、目标检测算法，输入的图片长宽是一样的，如224,224、416,416等。直接resize的话，图片就会失真。
+
+但是我们可以采用如下的代码，使其用padding的方式不失真。
+```Python
+from PIL import Image
+def letterbox_image(image, size):# size是想要的尺寸
+    # 对图片进行resize，使图片不失真。在空缺的地方进行padding
+    iw, ih = image.size
+    w, h = size
+    scale = min(w/iw, h/ih)# 取小边/原来的边（缩小系数），一般是缩小了尺寸（size<image.size）
+    nw = int(iw*scale)//按缩小系数之后的边长，还保持原来的比例
+    nh = int(ih*scale)
+
+    image = image.resize((nw,nh), Image.BICUBIC)
+    new_image = Image.new('RGB', size, (128,128,128))# PIL.Image.new(mode, size, color)，用给定的模式和大小创建一个新图像，灰色填充
+    new_image.paste(image, ((w-nw)//2, (h-nh)//2))# //整数除法，向下取整（得到了应当复制过去的图像的左上角坐标）
+    return new_image
+
+img = Image.open("2007_000039.jpg")
+new_image = letterbox_image(img,[416,416])
+new_image.show()
+
+```
 # 二、训练部分
 ## 1、计算loss所需参数
 在计算loss的时候，实际上是**pred和target**之间的对比：
