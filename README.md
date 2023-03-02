@@ -13,6 +13,7 @@
 # 一、预测部分
 ## 1、主干特征提取网络darknet53介绍
 输入416×416×3->进行下采样，宽高不断压缩，同时通道数不断扩张；若是进行上采样，宽高不断扩张，同时通道数不断压缩。
+
 ![darknet53](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/darknet53.jpg)
 
 **残差网络Residual**->Deep-Learning/Resnet50；h(x)=F(x)（残差部分，包含卷积）+x(直接映射)
@@ -25,6 +26,7 @@
 
 2. Darknet53的每一个卷积部分使用了特有的DarknetConv2D结构，每一次卷积的时候进行l2正则化，完成卷积后进行**BatchNormalization标准化与LeakyReLU**。
 普通的ReLU是将所有的负值都设为零，**Leaky ReLU**则是给所有**负值赋予一个非零斜率**。以数学的方式我们可以表示为：
+
 ![LeakyReLU](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/LeakyReLU.png)
 
 代码如下：
