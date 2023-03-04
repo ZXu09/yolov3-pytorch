@@ -104,6 +104,9 @@ class DarkNet(nn.Module):
         self.relu1  = nn.LeakyReLU(0.1)
 
         # 416,416,32 -> 208,208,64
+        # 1、3×3卷积416,416,32 -> 208,208,64
+        # 2、1×1卷积降维208,208,64->208,208,32
+        # 3、3×3卷积升维208,208,32->208,208,64
         self.layer1 = self._make_layer([32, 64], layers[0])
         # 208,208,64 -> 104,104,128
         self.layer2 = self._make_layer([64, 128], layers[1])
