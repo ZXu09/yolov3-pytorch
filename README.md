@@ -55,4 +55,4 @@ dog
     训练结果预测需要用到两个文件，分别是yolo.py和predict.py。在yolo.py里面修改model_path以及classes_path。  
     **model_path指向训练好的权值文件，在logs文件夹里。  
     classes_path指向检测类别所对应的txt。**  
-    完成修改后就可以运行predict.py进行检测了。运行后输入图片路径即可检测。
+    完成修改后就可以运行predict.py进行检测了。运行后输入图片路径（当前文件夹作为根目录）即可检测。
