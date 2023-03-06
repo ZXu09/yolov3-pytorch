@@ -31,7 +31,7 @@
 - **保证信息不丢失**。前向传输的过程中，随着层数的加深，Feature Map包含的图像信息会逐层减少，而ResNet的**直接映射**的加入，保证了 l+1 层的网络一定比 l 层包含**更多的图像信息**。
 
 <div align=center>
-<img src="https://github.com/SZUZOUXu/Deep-Learning/blob/main/image/残差网络.png"/>
+<img src="https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/残差网络.png"/>
 </div>
 
 ## darknet53
@@ -47,7 +47,7 @@
 普通的ReLU是将所有的负值都设为零，**Leaky ReLU**则是给所有**负值赋予一个非零斜率**。
 
 <div align=center>
-<img src="https://github.com/SZUZOUXu/Deep-Learning/blob/main/image/Darknetconv2D_BN_Leaky.png"/>
+<img src="https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/Darknetconv2D_BN_Leaky.png"/>
 </div>
 
 代码如下位置："yolo3-pytorch\nets\darknet.py"
