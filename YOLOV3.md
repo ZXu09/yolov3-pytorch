@@ -167,10 +167,11 @@ new_image.show()
 - Recall（召回率）：好瓜有多少比例被挑出来了
 - AP：PR曲线与x轴围成的面积，越接近1越好
 - 置信度confidence
-- mAP(mean Average Precision)即各类别AP的平均值
-IOU from 0.5 to 0.95 with a step size of 0.05，共计9个IOU（0.45/0.05），20个种类（VOC）
-计算IOU = 0.5作为confidence时的AP...->计算mAP
+- mAP(mean Average Precision)即各类别AP的平均值  
+IOU from 0.5 to 0.95 with a step size of 0.05，共计9个IOU（0.45/0.05），20个种类（VOC）  
+计算IOU = 0.5作为confidence时的AP...->计算mAP  
 高于阈值的边界框被视为正框，因此，置信度阈值越高，mAP 就越低，但我们对准确性更有信心。
+
 optimizer优化器：sgd
 ## 梯度下降法
 ### 批量梯度下降法
