@@ -48,8 +48,8 @@
 - 1×1卷积降维：208,208,64->208,208,32
 - 3×3卷积升维：208,208,32->208,208,64
 2. Darknet53的每一个卷积部分使用了特有的DarknetConv2D结构，每一次卷积的时候进行l2正则化，完成卷积后进行**BatchNormalization标准化与LeakyReLU**。加入这两个部分的目的是为了防止过拟合。  
-普通的ReLU是将所有的负值都设为零，**Leaky ReLU**则是给所有**负值赋予一个非零斜率**。
-
+普通的ReLU是将所有的负值都设为零，**Leaky ReLU**则是给所有**负值赋予一个非零斜率**。  
+Relu的输入值为负的时候，输出始终为0，其一阶导数也始终为0，这样会导致神经元不能更新参数（Dead ReLU）。**Leaky ReLU**解决了Relu函数进入负区间后，导致神经元不学习的问题。
 <div align=center>
 <img src="https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/Darknetconv2D_BN_Leaky.png"/>
 </div>
