@@ -14,10 +14,11 @@
 1. [二、训练部分](#二训练部分)
     - [评价指标](#评价指标)
     - [梯度下降法](#梯度下降法)
-2. [计算loss所需参数](#1、计算loss所需参数)
-3. [pred是什么](#2、pred是什么)
-4. [target是什么](#3、target是什么)
-5. [loss的计算过程](#4、loss的计算过程)
+2. [计算loss所需参数](#1计算loss所需参数)
+3. [pred是什么](#2pred是什么)
+4. [target是什么](#3target是什么)
+5. [loss的计算过程](#4loss的计算过程)
+
 生成目录：快捷键CTRL(CMD)+SHIFT+P，输入Markdown All in One: Create Table of Contents回车
 # yolov3-pytorch
 # 一、预测部分
