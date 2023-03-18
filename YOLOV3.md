@@ -27,6 +27,7 @@
 
 ![darknet53](https://github.com/SZUZOUXu/yolov3-pytorch/blob/main/image/darknet53.jpg)
 
+残差网络介绍：![darknet53](https://github.com/SZUZOUXu/Deep-Learning/blob/main/Resnet50.md)
 ## 残差网络
 ### 梯度消失问题
 **反向传播**更新参数时用的是**链式法则**，在很深的网络层中，由于**参数初始化一般更靠近0**，这样在训练的过程中更新浅层网络的参数时，很容易使得**梯度就接近于0**，而导致梯度消失，浅层的参数无法更新。
